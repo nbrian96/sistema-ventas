@@ -21,6 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type ProfileForm = {
     name: string;
+    last_name: string;
     email: string;
 }
 
@@ -29,6 +30,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: auth.user.name,
+        last_name: auth.user.last_name,
         email: auth.user.email,
     });
 
@@ -50,7 +52,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">First Name</Label>
 
                             <Input
                                 id="name"
@@ -58,11 +60,28 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
+                                autoFocus
                                 autoComplete="name"
-                                placeholder="Full name"
+                                placeholder="First name"
                             />
 
                             <InputError className="mt-2" message={errors.name} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="last-name">Last Name</Label>
+
+                            <Input
+                                id="last_name"
+                                className="mt-1 block w-full"
+                                value={data.last_name}
+                                onChange={(e) => setData('last_name', e.target.value)}
+                                required
+                                autoComplete="last_name"
+                                placeholder="Last name"
+                            />
+
+                            <InputError className="mt-2" message={errors.last_name} />
                         </div>
 
                         <div className="grid gap-2">
