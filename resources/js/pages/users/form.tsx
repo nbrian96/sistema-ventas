@@ -1,5 +1,4 @@
 import { useForm } from '@inertiajs/react';
-import { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -32,11 +31,15 @@ export default function UserForm({ user }: Props) {
         password_confirmation: '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        isEdit
-            ? put(`/users/${user!.id}`)
-            : post('/users');
+        try {
+            await (isEdit
+                ? put(`/users/${user!.id}`)
+                : post('/users'));
+        } catch (error) {
+            console.error('Error al guardar el usuario:', error);
+        }
     };
 
     return (

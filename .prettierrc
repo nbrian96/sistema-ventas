@@ -4,9 +4,13 @@
     "singleAttributePerLine": false,
     "htmlWhitespaceSensitivity": "css",
     "printWidth": 150,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "endOfLine": "lf",
     "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
     "tailwindFunctions": ["clsx", "cn"],
-    "tabWidth": 4,
     "overrides": [
         {
             "files": "**/*.yml",

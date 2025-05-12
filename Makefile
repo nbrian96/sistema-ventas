@@ -1,3 +1,36 @@
+FRONTEND_DIR=resources/js
+BACKEND_DIR=app
+
+.PHONY: format format-check lint types check
+
+# Ejecuta Prettier y reescribe los archivos mal formateados
+format:
+	@echo "\033[1;34m🧹 Formateando código con Prettier...\033[0m"
+	- npx prettier --write $(FRONTEND_DIR) $(BACKEND_DIR)
+
+# Verifica formato sin modificar archivos
+format-check:
+	@echo "\033[1;33m🔍 Verificando formato con Prettier...\033[0m"
+	- npx prettier --check $(FRONTEND_DIR) $(BACKEND_DIR)
+
+# Ejecuta ESLint y corrige errores automáticamente
+lint:
+	@echo "\033[1;34m🧽 Corriendo ESLint...\033[0m"
+	- npx eslint $(FRONTEND_DIR) --fix
+
+# Verifica los tipos TypeScript
+types:
+	@echo "\033[1;36m🧠 Verificando tipos con TypeScript...\033[0m"
+	- npx tsc --noEmit
+
+# Corre todo junto y muestra errores si hay
+check:
+	@echo "\033[1;35m🚨 Ejecutando chequeos de código...\033[0m"
+	@$(MAKE) format-check
+	@$(MAKE) lint
+	@$(MAKE) types
+	@echo "\033[1;32m✅ Chequeos completados (con o sin errores).\033[0m"
+
 # Comandos Laravel
 key:
 	php artisan key:generate
