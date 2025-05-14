@@ -72,9 +72,20 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $user->update($validated);
+        $data = [
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+        ];
+
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
 
         return redirect()->route('users.index');
     }

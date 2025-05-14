@@ -1,6 +1,11 @@
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { Pagination } from '@/components/ui/pagination';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Trash2 } from 'lucide-react';
 import get from 'lodash/get';
 import map from 'lodash/map';
 
@@ -28,62 +33,117 @@ type Props = {
 };
 
 export default function UserTable({ users }: Props) {
-    const handleDelete = (id: number) => {
-        if (!confirm('¿Eliminar este usuario?')) return;
+    const [userToDelete, setUserToDelete] = useState<User | null>(null);
+    const [showAlert, setShowAlert] = useState(false);
 
-        router.delete(`/users/${id}`);
+    const handleDelete = (user: User) => {
+        setUserToDelete(user);
     };
 
-    console.log(users);
+    const confirmDelete = () => {
+        if (!userToDelete) return;
+
+        router.delete(`/users/${userToDelete.id}`, {
+            onSuccess: () => {
+                setShowAlert(true);
+                setTimeout(() => setShowAlert(false), 3000);
+            }
+        });
+        setUserToDelete(null);
+    };
 
     return (
         <div className="rounded-xl border p-4">
+            {showAlert && (
+                <Alert className="mb-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Usuario eliminado</AlertTitle>
+                    <AlertDescription>
+                        El usuario ha sido eliminado exitosamente.
+                    </AlertDescription>
+                </Alert>
+            )}
+
             <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Usuarios</h2>
-                <button className="bg-primary hover:bg-primary/90 rounded px-4 py-2 text-white" onClick={() => router.visit('/users/create')}>
+                <Button onClick={() => router.visit('/users/create')}>
                     Nuevo Usuario
-                </button>
+                </Button>
             </div>
 
-            <table className="w-full table-auto border">
-                <thead>
-                    <tr className="bg-muted text-left">
-                        <th className="p-2">Nombre</th>
-                        <th>Email</th>
-                        <th>Roles</th>
-                        <th className="text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Roles</TableHead>
+                        <TableHead className="text-right">Acciones</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
                     {map(get(users, 'data', []), (user) => (
-                        <tr key={user.id} className="border-t">
-                            <td className="p-2">
+                        <TableRow key={user.id}>
+                            <TableCell>
                                 {user.name} {user.last_name}
-                            </td>
-                            <td>{user.email}</td>
-                            <td>{map(get(user, 'roles', []), (r) => r.name).join(', ')}</td>
-                            <td className="text-right">
-                                <Button variant="default" onClick={() => router.visit(`/users/${user.id}/edit`)}>Editar</Button>
-                                <Button variant="destructive" onClick={() => handleDelete(user.id)}>Eliminar</Button>
-                            </td>
-                        </tr>
+                            </TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>
+                                {map(get(user, 'roles', []), (r) => r.name).join(', ')}
+                            </TableCell>
+                            <TableCell className="text-right space-x-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => router.visit(`/users/${user.id}/edit`)}
+                                >
+                                    Editar
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleDelete(user)}
+                                >
+                                    Eliminar
+                                </Button>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-                {map(users.links, (link, i) => (
-                    <button
-                        key={i}
-                        disabled={!link.url}
-                        className={`rounded px-3 py-1 text-sm ${
-                            link.active ? 'bg-primary text-white' : 'bg-muted text-black'
-                        } ${!link.url ? 'cursor-not-allowed opacity-50' : ''}`}
-                        onClick={() => link.url && router.visit(link.url)}
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
-                ))}
+            <div className="mt-4">
+                <Pagination
+                    links={users.links}
+                    onPageChange={(url) => router.visit(url)}
+                />
             </div>
+
+            <Dialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>¿Eliminar usuario?</DialogTitle>
+                        <DialogDescription>
+                            ¿Estás seguro que deseas eliminar al usuario {userToDelete?.name} {userToDelete?.last_name}?
+                            Esta acción no se puede deshacer.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setUserToDelete(null)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={confirmDelete}
+                        >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Eliminar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

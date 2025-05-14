@@ -22,12 +22,26 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface UsersData {
+    data: User[];
+    current_page: number;
+    last_page: number;
+    links: PaginationLink[];
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    users?: UsersData;
     [key: string]: unknown;
 }
 
@@ -40,5 +54,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    roles: { name: string }[];
+    [key: string]: unknown;
 }
