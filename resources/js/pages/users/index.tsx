@@ -4,7 +4,7 @@ import { type BreadcrumbItem, type SharedData, type UsersData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 
 import get from 'lodash/get';
-import some from 'lodash/some';
+import includes from 'lodash/includes';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Users() {
     const { auth, users } = usePage<SharedData>().props;
 
-    const isSuperAdmin = some(get(auth, 'user.roles', []) as { name: string }[], { name: 'super-admin' });
+    const isSuperAdmin = includes(get(auth, 'user.roles', []), 'super-admin');
 
     if (!isSuperAdmin) {
         return (

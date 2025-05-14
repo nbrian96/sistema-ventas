@@ -1,11 +1,21 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { CircleUserRound, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
+
+import { map, get, includes, some, isEmpty } from 'lodash';
 
 const mainNavItems: NavItem[] = [
     {
@@ -17,6 +27,7 @@ const mainNavItems: NavItem[] = [
         title: 'Usuarios',
         href: '/users',
         icon: CircleUserRound,
+        roles: ['super-admin'],
     },
 ];
 
@@ -29,6 +40,14 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+
+    const userRoles: string[] = map(get(auth, 'user.roles', []), (r) => get(r, 'name', r));
+
+    const filteredNavItems = mainNavItems.filter((item) => {
+        return isEmpty(item.roles) || some(item.roles, (role) => includes(userRoles, role));
+    });
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -44,7 +63,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={filteredNavItems} />
             </SidebarContent>
 
             <SidebarFooter>
