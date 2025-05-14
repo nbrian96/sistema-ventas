@@ -1,6 +1,8 @@
 import { router } from '@inertiajs/react';
-import map from 'lodash/map';
+import { Button } from '@/components/ui/button';
+
 import get from 'lodash/get';
+import map from 'lodash/map';
 
 type User = {
     id: number;
@@ -36,12 +38,9 @@ export default function UserTable({ users }: Props) {
 
     return (
         <div className="rounded-xl border p-4">
-            <div className="mb-4 flex justify-between items-center">
+            <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Usuarios</h2>
-                <button
-                    className="rounded bg-primary px-4 py-2 text-white hover:bg-primary/90"
-                    onClick={() => router.visit('/users/create')}
-                >
+                <button className="bg-primary hover:bg-primary/90 rounded px-4 py-2 text-white" onClick={() => router.visit('/users/create')}>
                     Nuevo Usuario
                 </button>
             </div>
@@ -58,22 +57,14 @@ export default function UserTable({ users }: Props) {
                 <tbody>
                     {map(get(users, 'data', []), (user) => (
                         <tr key={user.id} className="border-t">
-                            <td className="p-2">{user.name} {user.last_name}</td>
+                            <td className="p-2">
+                                {user.name} {user.last_name}
+                            </td>
                             <td>{user.email}</td>
-                            <td>{map(get(user, 'roles', []), r => r.name).join(', ')}</td>
+                            <td>{map(get(user, 'roles', []), (r) => r.name).join(', ')}</td>
                             <td className="text-right">
-                                <button
-                                    className="mr-2 text-blue-600 hover:underline"
-                                    onClick={() => router.visit(`/users/${user.id}/edit`)}
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    className="text-red-600 hover:underline"
-                                    onClick={() => handleDelete(user.id)}
-                                >
-                                    Eliminar
-                                </button>
+                                <Button variant="default" onClick={() => router.visit(`/users/${user.id}/edit`)}>Editar</Button>
+                                <Button variant="destructive" onClick={() => handleDelete(user.id)}>Eliminar</Button>
                             </td>
                         </tr>
                     ))}
@@ -86,10 +77,8 @@ export default function UserTable({ users }: Props) {
                         key={i}
                         disabled={!link.url}
                         className={`rounded px-3 py-1 text-sm ${
-                            link.active
-                                ? 'bg-primary text-white'
-                                : 'bg-muted text-black'
-                        } ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            link.active ? 'bg-primary text-white' : 'bg-muted text-black'
+                        } ${!link.url ? 'cursor-not-allowed opacity-50' : ''}`}
                         onClick={() => link.url && router.visit(link.url)}
                         dangerouslySetInnerHTML={{ __html: link.label }}
                     />

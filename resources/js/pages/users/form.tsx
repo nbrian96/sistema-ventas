@@ -1,10 +1,9 @@
-import { useForm } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 
 interface Props {
     user?: {
@@ -34,9 +33,7 @@ export default function UserForm({ user }: Props) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await (isEdit
-                ? put(`/users/${user!.id}`)
-                : post('/users'));
+            await (isEdit ? put(`/users/${user!.id}`) : post('/users'));
         } catch (error) {
             console.error('Error al guardar el usuario:', error);
         }
@@ -45,36 +42,41 @@ export default function UserForm({ user }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={isEdit ? 'Editar usuario' : 'Nuevo usuario'} />
-            <form onSubmit={handleSubmit} className="space-y-6 p-4 max-w-2xl">
+            <form onSubmit={handleSubmit} className="max-w-2xl space-y-6 p-4">
                 <div>
                     <Label htmlFor="name">Nombre</Label>
-                    <Input id="name" value={data.name} onChange={e => setData('name', e.target.value)} />
-                    {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                    <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
 
                 <div>
                     <Label htmlFor="last_name">Apellido</Label>
-                    <Input id="last_name" value={data.last_name} onChange={e => setData('last_name', e.target.value)} />
-                    {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
+                    <Input id="last_name" value={data.last_name} onChange={(e) => setData('last_name', e.target.value)} />
+                    {errors.last_name && <p className="text-sm text-red-500">{errors.last_name}</p>}
                 </div>
 
                 <div>
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={data.email} onChange={e => setData('email', e.target.value)} />
-                    {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                    <Input id="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
+                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
 
                 {!isEdit && (
                     <>
                         <div>
                             <Label htmlFor="password">Contraseña</Label>
-                            <Input id="password" type="password" value={data.password} onChange={e => setData('password', e.target.value)} />
-                            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                            <Input id="password" type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} />
+                            {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                         </div>
 
                         <div>
                             <Label htmlFor="password_confirmation">Confirmar contraseña</Label>
-                            <Input id="password_confirmation" type="password" value={data.password_confirmation} onChange={e => setData('password_confirmation', e.target.value)} />
+                            <Input
+                                id="password_confirmation"
+                                type="password"
+                                value={data.password_confirmation}
+                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                            />
                         </div>
                     </>
                 )}

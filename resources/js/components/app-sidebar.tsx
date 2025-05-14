@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Folder, LayoutGrid, CircleUserRound } from 'lucide-react';
+import { CircleUserRound, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -25,7 +25,7 @@ const footerNavItems: NavItem[] = [
         title: 'Repository',
         href: 'https://github.com/nbrian96/sistema-ventas',
         icon: Folder,
-    }
+    },
 ];
 
 export function AppSidebar() {
