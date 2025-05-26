@@ -92,7 +92,7 @@ export default function UserTable({ users }: Props) {
                             </TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button
-                                    variant="outline"
+                                    variant="secondary"
                                     size="sm"
                                     onClick={() => router.visit(`/users/${user.id}/edit`)}
                                 >
@@ -124,6 +124,7 @@ export default function UserTable({ users }: Props) {
                         <DialogTitle>¿Eliminar usuario?</DialogTitle>
                         <DialogDescription>
                             ¿Estás seguro que deseas eliminar al usuario {userToDelete?.name} {userToDelete?.last_name}?
+                            <br/>
                             Esta acción no se puede deshacer.
                         </DialogDescription>
                     </DialogHeader>

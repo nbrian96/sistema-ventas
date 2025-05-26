@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Users() {
     const { auth, users } = usePage<SharedData>().props;
 
-    const isSuperAdmin = includes(get(auth, 'user.roles', []), 'super-admin');
+    const isSuperAdmin = includes(get(auth, 'user.roles', []) as string[], 'super-admin');
 
     if (!isSuperAdmin) {
         return (
